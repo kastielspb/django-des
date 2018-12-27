@@ -36,11 +36,12 @@ class ConfiguredEmailBackend(EmailBackend):
             self.configuration.from_email or email_message.from_email,
             encoding
         )
+        print(f'from_email: {from_email}')
         recipients = [sanitize_address(addr, encoding) for addr in email_message.recipients()]
         message = email_message.message()
         print(message.__dict__)
         try:
-            message['from_email'] = from_email
+            message['from_email'] = self.configuration.from_email
             self.connection.sendmail(from_email, recipients, message.as_bytes(linesep='\r\n'))
         except smtplib.SMTPException:
             if not self.fail_silently:
